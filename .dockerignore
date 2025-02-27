@@ -1,0 +1,28 @@
+# Direktori virtual environment (jika pakai venv)
+env/
+venv/
+
+# File konfigurasi dan cache lokal
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# File dataset atau hasil training yang besar
+*.h5
+*.csv
+*.json
+*.log
+
+# File kredensial atau sensitive
+.env
+*.pem
+*.key
+
+# File dependency yang bisa diinstal ulang
+Pipfile
+Pipfile.lock
+
+# Direktori IDE/editor (opsional)
+.vscode/
+.idea/
