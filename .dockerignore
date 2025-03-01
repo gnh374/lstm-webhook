@@ -8,11 +8,6 @@ __pycache__/
 *.pyo
 *.pyd
 
-# File dataset atau hasil training yang besar
-*.h5
-*.csv
-*.json
-*.log
 
 # File kredensial atau sensitive
 .env
