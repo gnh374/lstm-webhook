@@ -3,9 +3,9 @@ import aiohttp
 
 # List endpoint Prometheus tiap cluster
 PROMETHEUS_ENDPOINTS = [
-    "http://35.171.190.204:30901/query",
-    "http://52.55.44.27:30882/query",
-    "http://3.208.78.108:32028/query",
+    "http://35.171.190.204:30901/api/v1/query",
+    "http://52.55.44.27:30882/api/v1/query",
+    "http://3.208.78.108:32028/api/v1/query",
 ]
 
 # Query untuk CPU usage 15 menit terakhir
@@ -15,6 +15,7 @@ async def fetch_cpu_usage(session, index, url):
     async with session.get(f"{url}?query={QUERY}") as response:
         data = await response.json()
         values = [float(r["value"][1]) for r in data["data"]["result"][0]["values"]]  
+        print("data : " +data)
         return index, values  # Nama cluster langsung pakai index
 
 async def get_all_cpu_usage():
