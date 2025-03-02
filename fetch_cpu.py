@@ -9,7 +9,7 @@ PROMETHEUS_ENDPOINTS = [
 ]
 
 # Query untuk CPU usage 15 menit terakhir
-QUERY = "rate(node_cpu_seconds_total[5m])[15m:5m]"
+QUERY = 'sum(rate(node_cpu_seconds_total{mode!="idle"}[5m])) by (instance)[15m:5m]'
 
 async def fetch_cpu_usage(session, index, url):
     async with session.get(f"{url}?query={QUERY}") as response:
