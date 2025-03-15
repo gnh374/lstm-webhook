@@ -3,9 +3,9 @@ import aiohttp
 
 # List endpoint Prometheus tiap cluster
 PROMETHEUS_ENDPOINTS = [
-    "http://35.171.190.204:30901/api/v1/query",
-    "http://52.55.44.27:30882/api/v1/query",
-    "http://3.208.78.108:32028/api/v1/query",
+    "http://44.215.167.230:32380/api/v1/query",
+    "http://52.0.214.121:31443/api/v1/query",
+    "http:// 52.73.210.243:31441/api/v1/query",
 ]
 
 # Query untuk CPU usage 15 menit terakhir

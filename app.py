@@ -6,9 +6,9 @@ from flask import Flask, jsonify
 from fetch_cpu import get_all_cpu_usage  # Import dari fetch_cpu.py
 
 WEBHOOK_ENDPOINTS = [
-    "http://35.171.190.204:30080",
-    "http://52.55.44.27:30080",
-    "http://3.208.78.108:30080",
+    "http://44.215.167.230:30080",
+    "http://52.0.214.121:30080",
+    "http://52.73.210.243:30080",
 ]
 
 # Load Model LSTM
@@ -41,6 +41,7 @@ async def predict():
     best_cluster = min(predictions, key=lambda x: x[1])
 
     # Kirim request ke webhook
+    print("best cluster index ", best_cluster[0])
     webhook_response = await send_webhook_request(best_cluster[0])
 
     return jsonify({
