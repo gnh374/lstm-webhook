@@ -42,12 +42,26 @@ data "aws_ami" "detailed_amis" {
   }
 }
 
+data "aws_security_group" "existing" {
+  id = "sg-063ebc228f5d68027"  # Replace with your security group ID
+ 
+}
+
+data "aws_iam_instance_profile" "existing_profile" {
+  name = "LabInstanceProfile"  
+}
+
+
+
+
 # Create an instance for each AMI
 resource "aws_instance" "cluster_instances" {
   for_each = data.aws_ami.detailed_amis
   
   ami           = each.value.id
   instance_type = lookup(each.value.tags, "InstanceType", "t3.medium")
+  vpc_security_group_ids = [data.aws_security_group.existing.id]
+  iam_instance_profile   = data.aws_iam_instance_profile.existing_profile.name
   
   tags = {
     Name = "Restored-Instance-${each.key}"
