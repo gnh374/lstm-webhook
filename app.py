@@ -29,7 +29,7 @@ features = [
 app = Flask(__name__)
 
 async def predict_cpu(cluster_name, data):
-    model = Predictor(len(features), 128, 1)
+    model = Predictor(len(features), 64, 1)
     model.load_state_dict(torch.load("./best_model.pth"))
 
     with torch.inference_mode():
@@ -38,10 +38,10 @@ async def predict_cpu(cluster_name, data):
         df = preprocess(df, 5,2)
         feature_scaler = MinMaxScaler()
     
-        cpu_usage_data = scale(df.copy(), features, feature_scaler)
+        # cpu_usage_data = scale(df.copy(), features, feature_scaler)
         
         # cpu_usage_data = create_dataloader(np.array(cpu_usage_data), 64, lookback_window, 1)
-        seq =  cpu_usage_data[features].tail(lookback_window).values
+        seq =  df[features].tail(lookback_window).values
 
         input_data = torch.tensor(seq).to(torch.float32)
         prediction = model(input_data.unsqueeze(0))
