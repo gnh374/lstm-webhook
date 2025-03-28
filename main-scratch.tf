@@ -206,26 +206,27 @@ resource "null_resource" "rancher_cluster_registration" {
       fi
 
       echo "Cluster ID: $CLUSTER_ID"
-      
-      # Get Project ID associated with Cluster ID
-      PROJECT_ID=$(curl -k -X GET -H "Authorization: Bearer $RANCHER_ACCESS_KEY:$RANCHER_SECRET_KEY" \
-      "$RANCHER_URL/v3/projects" | jq -r --arg CLUSTER_ID "$CLUSTER_ID" '.data[] | select(.clusterId==$CLUSTER_ID) | .id')
+      sleep 1
+      TOKEN_RESPONSE=$(curl -k -X POST \
+      -H "Authorization: Bearer $RANCHER_ACCESS_KEY:$RANCHER_SECRET_KEY" \
+      -H "Content-Type: application/json" \
+      "$RANCHER_URL/v3/clusterRegistrationTokens" \
+      -d '{
+          "type": "clusterRegistrationToken",
+          "clusterId": "'"$CLUSTER_ID"'"
+      }')
 
-      if [[ -z "$PROJECT_ID" ]]; then
-        echo "Failed to get Project ID!"
-        exit 1
+      # Extract the token
+      REGISTRATION_TOKEN=$(echo "$TOKEN_RESPONSE" | jq -r '.token // empty')
+
+
+      if [[ -z "$REGISTRATION_TOKEN" ]]; then
+          echo "Failed to generate registration token!"
+          exit 1
       fi
 
-      echo "Project ID: $PROJECT_ID"
-
-      # Rancher login with Project ID
-      rancher login "$RANCHER_URL" --token "$RANCHER_ACCESS_KEY:$RANCHER_SECRET_KEY" --context "$PROJECT_ID"
-
-      # Generate import command for cluster
-      sleep 5
-      rancher clusters create backup-cluster --import | awk '/curl --insecure/{print}' > /home/ubuntu/import.sh
-      chmod +x /home/ubuntu/import.sh
-      bash /home/ubuntu/import.sh
+      curl --insecure -sfL "https://35.168.200.58.sslip.io/v3/import/$${REGISTRATION_TOKEN}_$${CLUSTER_ID}.yaml"  | kubectl apply -f -
+      
       EOL
       EOF
       ,
