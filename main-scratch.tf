@@ -114,7 +114,7 @@ resource "null_resource" "k3s_master_setup" {
       "sudo apt-get update",
       "sudo apt-get install -y curl",
       "curl -sfL https://get.k3s.io | K3S_TOKEN=${random_password.k3s_token.result} sh -s - server",
-      "sudo chmod 644 /etc/rancher/k3s/k3s.yaml"
+      "sudo chmod 644 /etc/rancher/k3s/k3s.yaml",
     ]
   }
 }
@@ -272,6 +272,34 @@ resource "null_resource" "rancher_cluster_registration" {
     ]
   }
 }
+
+resource "null_resource" "install_velero" {
+  depends_on = [null_resource.k3s_master_setup]
+
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = file("~/.ssh/terraform.pem")
+    host        = aws_instance.master_node.public_ip
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml",
+      "export VELERO_VERSION=$(curl -s https://api.github.com/repos/vmware-tanzu/velero/releases/latest | grep tag_name | cut -d '\"' -f 4)",
+      "curl -LO https://github.com/vmware-tanzu/velero/releases/download/$${VELERO_VERSION}/velero-$${VELERO_VERSION}-linux-amd64.tar.gz",
+      "tar -xvf velero-$${VELERO_VERSION}-linux-amd64.tar.gz",
+      "sudo mv velero-$${VELERO_VERSION}-linux-amd64/velero /usr/local/bin/",
+      "rm -rf velero-$${VELERO_VERSION}-linux-amd64*",
+      "kubectl create namespace velero || true",
+      "velero install --provider aws --plugins velero/velero-plugin-for-aws:v1.10.0 --bucket velero-naomi-new --prefix velero-naomi-new --backup-location-config region=us-east-1,s3Url=https://s3.us-east-1.amazonaws.com --snapshot-location-config region=us-east-1 --use-node-agent --no-secret --wait",
+      "kubectl get pods -n velero",
+      "velero restore create --from-backup backup-nginx",
+      "kubectl get pods -n nginx"
+    ]
+  }
+}
+
 
 
 
