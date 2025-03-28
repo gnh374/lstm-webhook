@@ -75,6 +75,8 @@ resource "aws_instance" "master_node" {
 
 # Create Worker Node
 resource "aws_instance" "worker_node" {
+
+  depends_on = [aws_instance.master_node]
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t2.small"
   
@@ -89,6 +91,7 @@ resource "aws_instance" "worker_node" {
     Role = "Cluster-Worker"
   }
 }
+
 
 # Install K3s on Master Node
 resource "null_resource" "k3s_master_setup" {
@@ -116,6 +119,20 @@ resource "null_resource" "k3s_master_setup" {
   }
 }
 
+resource "null_resource" "copy_kubeconfig" {
+  depends_on = [null_resource.k3s_master_setup]
+
+  provisioner "local-exec" {
+    command = <<EOT
+      scp -o StrictHostKeyChecking=no -i ~/.ssh/terraform.pem ubuntu@${aws_instance.master_node.public_ip}:/etc/rancher/k3s/k3s.yaml ./k3s.yaml
+      chmod 644 ./k3s.yaml
+    EOT
+  }
+}
+
+
+
+
 # Install K3s Agent on Worker Node
 resource "null_resource" "k3s_worker_setup" {
   # Trigger on worker node creation and after master setup
@@ -125,8 +142,8 @@ resource "null_resource" "k3s_worker_setup" {
   }
 
   # Depends on master node setup
-  depends_on = [null_resource.k3s_master_setup]
-
+  depends_on = [null_resource.copy_kubeconfig ]
+  
   # SSH connection details
   connection {
     type        = "ssh"
@@ -135,15 +152,33 @@ resource "null_resource" "k3s_worker_setup" {
     host        = aws_instance.worker_node.public_ip
   }
 
+  
+  provisioner "file" {
+    source      = "./k3s.yaml" # Dari lokal Terraform
+    destination = "/home/ubuntu/k3s.yaml"
+
+  }
+
+
   # Provision K3s worker
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get update",
       "sudo apt-get install -y curl",
-      "curl -sfL https://get.k3s.io | K3S_TOKEN=${random_password.k3s_token.result} K3S_URL=https://${aws_instance.master_node.private_ip}:6443 sh -s - agent"
+      "curl -sfL https://get.k3s.io | K3S_TOKEN=${random_password.k3s_token.result} K3S_URL=https://${aws_instance.master_node.private_ip}:6443 sh -s - agent",
+       "sed -i 's/127.0.0.1/${aws_instance.master_node.private_ip}/g' /home/ubuntu/k3s.yaml",
+      "mkdir -p ~/.kube",
+      "cp /home/ubuntu/k3s.yaml ~/.kube/config",
+      "chmod 600 ~/.kube/config",
+      "export KUBECONFIG=~/.kube/config",
+      "echo 'export KUBECONFIG=~/.kube/config' >> ~/.bashrc",
+      "sudo systemctl restart k3s-agent"
     ]
   }
+
+ 
 }
+
 
 resource "null_resource" "rancher_cluster_registration" {
   # Trigger on master node creation and after K3s setup
