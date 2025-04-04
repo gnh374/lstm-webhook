@@ -3,9 +3,9 @@ import aiohttp
 
 # List endpoint Prometheus tiap cluster
 PROMETHEUS_ENDPOINTS = [
-    "http://44.215.167.230:32380/api/v1/query",
-    "http://52.0.214.121:31433/api/v1/query",
-    "http://52.73.210.243:31441/api/v1/query",
+    "http://3.223.250.176:30007/api/v1/query",
+    "http://3.233.22.201:30007/api/v1/query",
+    "http://98.84.220.67:30007/api/v1/query",
 ]
 
 

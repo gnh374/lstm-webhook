@@ -1,3 +1,5 @@
+from asyncio import subprocess
+import os
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
@@ -76,6 +78,29 @@ async def predict():
     "best_cluster": best_cluster[0],
     "webhook_response": webhook_response  # Include webhook response
 })
+
+@app.route('/run-terraform', methods=['POST'])
+def run_terraform():
+    try:
+        # Change directory to where the Terraform files are located
+        terraform_dir = "./"  # Adjust this path if needed
+        os.chdir(terraform_dir)
+
+        # Run `terraform init`
+        init_process = subprocess.run(["terraform", "init"], capture_output=True, text=True)
+        if init_process.returncode != 0:
+            return jsonify({"error": "Terraform init failed", "details": init_process.stderr}), 500
+
+        # Run `terraform apply` with auto-approve
+        apply_process = subprocess.run(["terraform", "apply", "-auto-approve"], capture_output=True, text=True)
+        if apply_process.returncode != 0:
+            return jsonify({"error": "Terraform apply failed", "details": apply_process.stderr}), 500
+
+        return jsonify({"message": "Terraform applied successfully", "output": apply_process.stdout})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
  
 
