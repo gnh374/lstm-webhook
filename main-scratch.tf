@@ -104,7 +104,7 @@ resource "null_resource" "k3s_master_setup" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    private_key = file("~/.ssh/terraform.pem")  # Path to your SSH key
+    private_key = file("./terraform.pem")  # Path to your SSH key
     host        = aws_instance.master_node.public_ip
   }
 
@@ -124,7 +124,7 @@ resource "null_resource" "copy_kubeconfig" {
 
   provisioner "local-exec" {
     command = <<EOT
-      scp -o StrictHostKeyChecking=no -i ~/.ssh/terraform.pem ubuntu@${aws_instance.master_node.public_ip}:/etc/rancher/k3s/k3s.yaml ./k3s.yaml
+      scp -o StrictHostKeyChecking=no -i ./terraform.pem ubuntu@${aws_instance.master_node.public_ip}:/etc/rancher/k3s/k3s.yaml ./k3s.yaml
       chmod 644 ./k3s.yaml
     EOT
   }
@@ -148,7 +148,7 @@ resource "null_resource" "k3s_worker_setup" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    private_key = file("~/.ssh/terraform.pem")  # Path to your SSH key
+    private_key = file("./terraform.pem")  # Path to your SSH key
     host        = aws_instance.worker_node.public_ip
   }
 
@@ -193,7 +193,7 @@ resource "null_resource" "rancher_cluster_registration" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    private_key = file("~/.ssh/terraform.pem")
+    private_key = file("./terraform.pem")
     host        = aws_instance.master_node.public_ip
   }
 
@@ -279,7 +279,7 @@ resource "null_resource" "install_velero" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    private_key = file("~/.ssh/terraform.pem")
+    private_key = file("./terraform.pem")
     host        = aws_instance.master_node.public_ip
   }
 
