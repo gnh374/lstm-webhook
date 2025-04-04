@@ -14,9 +14,9 @@ from scripts.model import Predictor
 from scripts.preprocessing import scale , preprocess # Import dari fetch_cpu.py
 
 WEBHOOK_ENDPOINTS = [
-    "http://44.215.167.230:30080/api/trigger",
-    "http://52.0.214.121:30080/api/trigger",
-    "http://52.73.210.243:30080/api/trigger",
+    "http://3.223.250.176:30080/api/trigger",
+    "http://3.233.22.201:30080/api/trigger",
+    "http://98.84.220.67:30080/api/trigger",
 ]
 lookback_window = 5 
 features = [
