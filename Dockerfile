@@ -7,11 +7,15 @@ WORKDIR /app
 # Salin file proyek ke dalam container
 COPY . .
 
-RUN apt-get update && apt-get install -y unzip \
+RUN apt-get update && apt-get install -y \
+    curl \
+    unzip \
     && curl -fsSL https://releases.hashicorp.com/terraform/1.5.5/terraform_1.5.5_linux_amd64.zip -o terraform.zip \
     && unzip terraform.zip \
     && mv terraform /usr/local/bin/ \
-    && rm terraform.zip
+    && rm terraform.zip \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
 
     
 # Install dependency
