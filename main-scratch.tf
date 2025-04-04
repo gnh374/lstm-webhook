@@ -217,7 +217,7 @@ resource "null_resource" "rancher_cluster_registration" {
       set -e
       set -x
 
-      export RANCHER_URL="https://35.168.200.58.sslip.io"
+      export RANCHER_URL="https://52.5.206.220.sslip.io"
       export RANCHER_ACCESS_KEY="token-wjnpv"
       export RANCHER_SECRET_KEY="hbmk99d6dgt9lpc7tvc8zqftmfwk7tkmrtdphjnmpwnt4l2rtqtjwv"
       export CLUSTER_NAME="backup-cluster"
@@ -260,7 +260,7 @@ resource "null_resource" "rancher_cluster_registration" {
           exit 1
       fi
 
-      curl --insecure -sfL "https://35.168.200.58.sslip.io/v3/import/$${REGISTRATION_TOKEN}_$${CLUSTER_ID}.yaml"  | kubectl apply -f -
+      curl --insecure -sfL "https://52.5.206.220.sslip.io/v3/import/$${REGISTRATION_TOKEN}_$${CLUSTER_ID}.yaml"  | kubectl apply -f -
       
       EOL
       EOF
