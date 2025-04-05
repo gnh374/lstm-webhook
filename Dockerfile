@@ -4,8 +4,12 @@ FROM python:3.9-slim
 # Set working directory di container
 WORKDIR /app
 
+COPY terraform.pem . 
+RUN chmod 644 terraform.pem
+
 # Salin file proyek ke dalam container
 COPY . .
+
 
 RUN apt-get update && apt-get install -y \
     curl \
@@ -22,7 +26,6 @@ RUN apt-get update && apt-get install -y \
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-RUN chmod 644 terraform.pem
 
 # Expose port (sesuaikan jika pakai Flask/FastAPI)
 EXPOSE 5000
