@@ -21,8 +21,8 @@ RUN apt-get update && apt-get install -y \
 # Install dependency
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
-    
-RUN chmod 600 terraform.pem
+
+RUN chmod 644 terraform.pem
 
 # Expose port (sesuaikan jika pakai Flask/FastAPI)
 EXPOSE 5000
