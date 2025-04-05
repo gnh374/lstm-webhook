@@ -11,7 +11,6 @@ __pycache__/
 
 # File kredensial atau sensitive
 .env
-*.pem
 *.key
 
 # File dependency yang bisa diinstal ulang
