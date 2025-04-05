@@ -4,8 +4,6 @@ FROM python:3.9-slim
 # Set working directory di container
 WORKDIR /app
 
-COPY terraform.pem . 
-RUN chmod 644 terraform.pem
 
 # Salin file proyek ke dalam container
 COPY . .
