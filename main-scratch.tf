@@ -292,7 +292,7 @@ resource "null_resource" "install_velero" {
       "sudo mv velero-$${VELERO_VERSION}-linux-amd64/velero /usr/local/bin/",
       "rm -rf velero-$${VELERO_VERSION}-linux-amd64*",
       "kubectl create namespace velero || true",
-      "velero install --provider aws --plugins velero/velero-plugin-for-aws:v1.10.0 --bucket velero-naomi-new --prefix velero-naomi-new --backup-location-config region=us-east-1,s3Url=https://s3.us-east-1.amazonaws.com --snapshot-location-config region=us-east-1 --use-node-agent --no-secret --wait",
+      "velero install --provider aws --plugins velero/velero-plugin-for-aws:v1.10.0 --bucket velero-naomi-two --prefix velero-naomi-two --backup-location-config region=us-east-1,s3Url=https://s3.us-east-1.amazonaws.com --snapshot-location-config region=us-east-1 --use-node-agent --no-secret --wait",
       "kubectl get pods -n velero",
       "velero restore create --from-backup backup-nginx",
       "kubectl get pods -n nginx"
