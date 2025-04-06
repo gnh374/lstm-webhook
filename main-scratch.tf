@@ -218,8 +218,8 @@ resource "null_resource" "rancher_cluster_registration" {
       set -x
 
       export RANCHER_URL="https://52.5.206.220.sslip.io"
-      export RANCHER_ACCESS_KEY="token-wjnpv"
-      export RANCHER_SECRET_KEY="hbmk99d6dgt9lpc7tvc8zqftmfwk7tkmrtdphjnmpwnt4l2rtqtjwv"
+      export RANCHER_ACCESS_KEY="token-8975p"
+      export RANCHER_SECRET_KEY="rjm52vbpnw2fwcsmg2dvdqjt9t4r2jcpjhr99p27fn4jzrgtqp7zrr"
       export CLUSTER_NAME="backup-cluster"
       export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 
