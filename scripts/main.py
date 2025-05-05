@@ -51,7 +51,7 @@ if __name__ == '__main__':
     # model = Predictor(len(features), 128, len(target))
     # optimizer = AdamW(model.parameters(), lr=0.0001, weight_decay=0.01)
     model = Predictor(len(features), 128, 1)
-    model.load_state_dict(torch.load("../models/best_model.pth"))
+    model.load_state_dict(torch.load("../models/best_model.pt"))
     model.eval()
     # best_model = train(model, RMSLELoss(), optimizer, 100, train_set, '../models/best_model.pth')
 

@@ -1,0 +1,7 @@
+POST http://localhost:5000/predict-combined
+Content-Type: application/json
+
+{
+  "name": "Alice",
+  "email": "alice@example.com"
+}

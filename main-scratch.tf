@@ -27,12 +27,12 @@ resource "random_password" "k3s_token" {
 
 # Fetch the existing VPC
 data "aws_vpc" "existing_vpc" {
-  id = "vpc-0d82770c27981b7dc"
+  id = "vpc-09bad494b664adc15"
 }
 
 # Fetch the existing security group
 data "aws_security_group" "existing" {
-  id = "sg-059721cb3b971848f"
+  id = "sg-0011cfb37cfee265b"
 }
 
 # Fetch the existing IAM instance profile
@@ -217,9 +217,9 @@ resource "null_resource" "rancher_cluster_registration" {
       set -e
       set -x
 
-      export RANCHER_URL="https://52.5.206.220.sslip.io"
-      export RANCHER_ACCESS_KEY="token-8975p"
-      export RANCHER_SECRET_KEY="rjm52vbpnw2fwcsmg2dvdqjt9t4r2jcpjhr99p27fn4jzrgtqp7zrr"
+      export RANCHER_URL="https://3.208.173.140.sslip.io"
+      export RANCHER_ACCESS_KEY="token-rtv46"
+      export RANCHER_SECRET_KEY="mdv65cpslx4r2b2rcqnkkrnwgq9brmfhlrb2l694jrds46h2fpg5tg"
       export CLUSTER_NAME="backup-cluster"
       export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
 
@@ -260,7 +260,7 @@ resource "null_resource" "rancher_cluster_registration" {
           exit 1
       fi
 
-      curl --insecure -sfL "https://52.5.206.220.sslip.io/v3/import/$${REGISTRATION_TOKEN}_$${CLUSTER_ID}.yaml"  | kubectl apply -f -
+      curl --insecure -sfL "https://3.208.173.140.sslip.io/v3/import/$${REGISTRATION_TOKEN}_$${CLUSTER_ID}.yaml"  | kubectl apply -f -
       
       EOL
       EOF
@@ -292,7 +292,7 @@ resource "null_resource" "install_velero" {
       "sudo mv velero-$${VELERO_VERSION}-linux-amd64/velero /usr/local/bin/",
       "rm -rf velero-$${VELERO_VERSION}-linux-amd64*",
       "kubectl create namespace velero || true",
-      "velero install --provider aws --plugins velero/velero-plugin-for-aws:v1.10.0 --bucket velero-naomi-two --prefix velero-naomi-two --backup-location-config region=us-east-1,s3Url=https://s3.us-east-1.amazonaws.com --snapshot-location-config region=us-east-1 --use-node-agent --no-secret --wait",
+      "velero install --provider aws --plugins velero/velero-plugin-for-aws:v1.10.0 --bucket new-velero-naomi --prefix new-velero-naomi --backup-location-config region=us-east-1,s3Url=https://s3.us-east-1.amazonaws.com --snapshot-location-config region=us-east-1 --use-node-agent --no-secret --wait",
       "kubectl get pods -n velero",
       "velero restore create --from-backup backup-nginx",
       "kubectl get pods -n nginx"
