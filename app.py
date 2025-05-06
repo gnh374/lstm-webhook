@@ -14,7 +14,7 @@ from scripts.model import Predictor
 from scripts.preprocessing import scale , preprocess # Import dari fetch_cpu.py
 
 WEBHOOK_ENDPOINTS = [
-    "http://54.227.47.149:30080/api/trigger",
+    "http://54.88.29.103:30080/api/trigger",
     "http://54.162.198.32:30080/api/trigger",
     "http://98.85.113.75:30080/api/trigger",
 ]
@@ -241,9 +241,11 @@ async def predict_combined():
     # Combine predictions with the down cluster predictions
     combined_predictions = []
     for name, predictions in all_predictions:
+        print(down_predictions)
         # Add the down cluster predictions to the current cluster's predictions
         if down_predictions:
-            predictions = [p + down_predictions[i] for i, p in enumerate(predictions)]
+            down_prediction_values = down_predictions[1]  # Extract the list of predictions
+            predictions = [p + float(down_prediction_values[i]) for i, p in enumerate(predictions)]
         # Get the maximum prediction for the cluster
         max_prediction = max(predictions)
         combined_predictions.append((name, max_prediction))
